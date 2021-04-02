@@ -4,10 +4,22 @@ This is a header only library that allows you to quickly write a Windows Service
 
 This is a fork from a MIT licensed windows-service template created by Mikko Saarinki and located here https://github.com/Kingston1/windows-service.
 
-This fork attempts to make this repo into something that can be used by other CMake projects easily with the following:
+This fork attempts to make this repo into something that can be used by other CMake projects easily with the following CMake:
 
 ```
-@TODO:
+include(FetchContent)
+FetchContent_Declare(
+        LibWindowsService
+        GIT_REPOSITORY https://github.com/Allar/windows-service
+        GIT_TAG        1.0
+)
+FetchContent_MakeAvailable(LibWindowsService)
+```
+
+And CMake for linking:
+
+```
+target_link_libraries(${EXE_TARGET_NAME} LibWindowsService)
 ```
 
 # Example
