@@ -1,2 +1,1 @@
 add_subdirectory(CheckSumAndDiff)
-add_subdirectory(CheckSumAndDiffHeaderOnly)
