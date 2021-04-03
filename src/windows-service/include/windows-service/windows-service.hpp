@@ -104,7 +104,7 @@ namespace ServiceUtils
         */
         int options(LPCTSTR serviceName,
             LPCTSTR displayName,
-            LPTSTR description,
+            LPCTSTR description,
             TCHAR *argv[]) const
         {
             if (!lstrcmpi(argv[1], TEXT("install")))
@@ -137,7 +137,7 @@ namespace ServiceUtils
 
         int options(LPCTSTR serviceName,
             LPCTSTR displayName,
-            LPTSTR description,
+            LPCTSTR description,
             Mode mode) const
         {
             // Get a handle to the SCM database. 
@@ -175,7 +175,7 @@ namespace ServiceUtils
 
         void create(LPCTSTR serviceName,
             LPCTSTR displayName,
-            LPTSTR description,
+            LPCTSTR description,
             SC_HANDLE manager) const
         {
             TCHAR binaryPath[MAX_PATH];
@@ -243,7 +243,7 @@ namespace ServiceUtils
             });
         }
 
-        void setDescription(LPCTSTR serviceName, SC_HANDLE manager, LPTSTR description) const
+        void setDescription(LPCTSTR serviceName, SC_HANDLE manager, LPCTSTR description) const
         {
             openService(serviceName,
                 manager,
@@ -251,7 +251,7 @@ namespace ServiceUtils
                 "ChangeServiceConfig2",
                 "Service description added.",
                 [description](auto service) {
-                    SERVICE_DESCRIPTION sd{ description };
+                    SERVICE_DESCRIPTION sd{ const_cast<LPTSTR>(description) };
                     return ChangeServiceConfig2(service, SERVICE_CONFIG_DESCRIPTION, &sd) != 0;
             });
         }
@@ -445,10 +445,10 @@ private:
 template <class TApp>
 struct ServiceMain
 {
-    ServiceMain(LPTSTR serviceName,
+    ServiceMain(LPCTSTR serviceName,
         LPCTSTR displayName,
-        LPTSTR description,
-        TCHAR *argv[])
+        LPCTSTR description,
+        TCHAR **argv)
     {
         ServiceUtils::Setup setup;
         if (setup.options(serviceName, displayName, description, argv))
@@ -472,7 +472,7 @@ struct ServiceMain
 
         SERVICE_TABLE_ENTRY DispatchTable[] =
         {
-            { serviceName, static_cast<LPSERVICE_MAIN_FUNCTION>(serviceMain) },
+            { const_cast<LPTSTR>(serviceName), static_cast<LPSERVICE_MAIN_FUNCTION>(serviceMain) },
             { NULL, NULL }
         };
 
